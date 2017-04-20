@@ -1,4 +1,4 @@
-package cat.aubricoc.retailstore;
+package cat.aubricoc.retailstore.activity;
 
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import cat.aubricoc.retailstore.R;
 
 public class ProductsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
