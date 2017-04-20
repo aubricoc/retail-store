@@ -5,4 +5,9 @@
 	<string name="navigation_drawer_close">Close navigation drawer</string>
 	<string name="product_image">Product Image</string>
 	<string name="categories">Categories</string>
+	<string name="author">Jordi Albert</string>
+	<string name="cart">Shopping Cart</string>
+	<string name="add_to_cart">Add to Cart</string>
+	<string name="in_cart">In Cart:</string>
+	<string name="close">Close</string>
 </resources>

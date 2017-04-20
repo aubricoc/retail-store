@@ -1,7 +1,9 @@
 package cat.aubricoc.retailstore.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -37,9 +40,11 @@ import cat.aubricoc.retailstore.R;
 import cat.aubricoc.retailstore.adapter.CategoriesAdapter;
 import cat.aubricoc.retailstore.fragment.CategoryFragment;
 import cat.aubricoc.retailstore.model.Category;
+import cat.aubricoc.retailstore.model.Product;
 import cat.aubricoc.retailstore.service.CategoryService;
 import cat.aubricoc.retailstore.service.DataService;
 import cat.aubricoc.retailstore.service.PreferenceService;
+import cat.aubricoc.retailstore.utils.Constants;
 
 public class ProductsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -120,20 +125,26 @@ public class ProductsActivity extends AppCompatActivity implements NavigationVie
 	}
 
 	@Override
-	public boolean onNavigationItemSelected(MenuItem item) {
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (item.getGroupId() == 123) {
-
+		if (id == R.id.cart_menu) {
+			Intent intent = new Intent(this, ProductDetailActivity.class);
+			startActivity(intent);
 		}
-		if (id == R.id.nav_share) {
-
-		} else if (id == R.id.nav_send) {
-
-		}
-
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawer.closeDrawer(GravityCompat.START);
-		return true;
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+		return onOptionsItemSelected(item);
 	}
 
 	private class OnPageChangeListener extends ViewPager.SimpleOnPageChangeListener {

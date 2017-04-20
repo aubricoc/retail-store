@@ -3,6 +3,7 @@ package cat.aubricoc.retailstore.model;
 import com.canteratech.apa.annotation.Entity;
 import com.canteratech.apa.annotation.GeneratedValue;
 import com.canteratech.apa.annotation.Id;
+import com.canteratech.apa.annotation.Transient;
 
 @Entity
 public class Product {
@@ -18,6 +19,9 @@ public class Product {
 	private byte[] image;
 
 	private Category category;
+
+	@Transient
+	private ItemCart itemCart;
 
 	public Long getId() {
 		return id;
@@ -57,5 +61,13 @@ public class Product {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public ItemCart getItemCart() {
+		return itemCart;
+	}
+
+	public void setItemCart(ItemCart itemCart) {
+		this.itemCart = itemCart;
 	}
 }
