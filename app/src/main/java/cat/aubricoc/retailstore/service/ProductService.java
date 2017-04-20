@@ -2,6 +2,8 @@ package cat.aubricoc.retailstore.service;
 
 import android.content.Context;
 
+import java.util.List;
+
 import cat.aubricoc.retailstore.dao.ItemCartDao;
 import cat.aubricoc.retailstore.dao.ProductDao;
 import cat.aubricoc.retailstore.model.ItemCart;
@@ -11,12 +13,12 @@ public class ProductService {
 
 	private Context context;
 
-	public static ProductService newInstance(Context context) {
-		return new ProductService(context);
-	}
-
 	private ProductService(Context context) {
 		this.context = context;
+	}
+
+	public static ProductService newInstance(Context context) {
+		return new ProductService(context);
 	}
 
 	public Product getById(Long productId) {
@@ -38,5 +40,18 @@ public class ProductService {
 			itemCart.setQuantity(itemCart.getQuantity() + 1);
 			itemCartDao.update(itemCart);
 		}
+	}
+
+	public List<ItemCart> getCart() {
+		ProductDao productDao = ProductDao.newInstance(context);
+		List<ItemCart> cart = ItemCartDao.newInstance(context).getAll();
+		for (ItemCart item : cart) {
+			item.setProduct(productDao.getById(item.getProduct().getId()));
+		}
+		return cart;
+	}
+
+	public void removeFromCart(ItemCart itemCart) {
+		ItemCartDao.newInstance(context).delete(itemCart);
 	}
 }

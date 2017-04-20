@@ -3,48 +3,32 @@ package cat.aubricoc.retailstore.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cat.aubricoc.retailstore.R;
 import cat.aubricoc.retailstore.adapter.CategoriesAdapter;
-import cat.aubricoc.retailstore.fragment.CategoryFragment;
 import cat.aubricoc.retailstore.model.Category;
-import cat.aubricoc.retailstore.model.Product;
 import cat.aubricoc.retailstore.service.CategoryService;
 import cat.aubricoc.retailstore.service.DataService;
 import cat.aubricoc.retailstore.service.PreferenceService;
-import cat.aubricoc.retailstore.utils.Constants;
 
 public class ProductsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -134,7 +118,7 @@ public class ProductsActivity extends AppCompatActivity implements NavigationVie
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == R.id.cart_menu) {
-			Intent intent = new Intent(this, ProductDetailActivity.class);
+			Intent intent = new Intent(this, CartActivity.class);
 			startActivity(intent);
 		}
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
