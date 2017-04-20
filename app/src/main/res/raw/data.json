@@ -1,0 +1,44 @@
+[
+	{
+		"name": "Electronics",
+		"icon": "electronics.png",
+		"products": [
+			{
+				"name": "Microwave oven",
+				"price": 125.30,
+				"image": "microwave.jpg"
+			},
+			{
+				"name": "Television",
+				"price": 243.18,
+				"image": "television.jpg"
+			},
+			{
+				"name": "Vacuum Cleaner",
+				"price": 83.10,
+				"image": "vacuum.jpg"
+			}
+		]
+	},
+	{
+		"name": "Furniture",
+		"icon": "furniture.png",
+		"products": [
+			{
+				"name": "Table",
+				"price": 122.85,
+				"image": "table.png"
+			},
+			{
+				"name": "Chair",
+				"price": 32.25,
+				"image": "chair.jpg"
+			},
+			{
+				"name": "Almirah",
+				"price": 230.00,
+				"image": "almirah.jpg"
+			}
+		]
+	}
+]

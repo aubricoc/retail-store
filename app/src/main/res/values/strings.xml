@@ -1,10 +1,8 @@
 <resources>
 	<string name="app_name">Retail Store</string>
-	<string name="title_activity_tabbed">TabbedActivity</string>
-	<string name="action_settings">Settings</string>
-	<string name="section_format">Hello World from section: %1$d</string>
-	<string name="title_activity_navigation">NavigationActivity</string>
 
 	<string name="navigation_drawer_open">Open navigation drawer</string>
 	<string name="navigation_drawer_close">Close navigation drawer</string>
+	<string name="product_image">Product Image</string>
+	<string name="categories">Categories</string>
 </resources>

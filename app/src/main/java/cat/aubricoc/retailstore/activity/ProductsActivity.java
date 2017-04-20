@@ -1,10 +1,13 @@
 package cat.aubricoc.retailstore.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -12,24 +15,51 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import cat.aubricoc.retailstore.R;
+import cat.aubricoc.retailstore.adapter.CategoriesAdapter;
+import cat.aubricoc.retailstore.fragment.CategoryFragment;
+import cat.aubricoc.retailstore.model.Category;
+import cat.aubricoc.retailstore.service.CategoryService;
+import cat.aubricoc.retailstore.service.DataService;
+import cat.aubricoc.retailstore.service.PreferenceService;
 
 public class ProductsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-	private SectionsPagerAdapter mSectionsPagerAdapter;
-	private ViewPager mViewPager;
+	private ViewPager viewPager;
+
+	private CategoriesAdapter categoriesAdapter;
+
+	private NavigationView navigationView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_products);
+
+		PreferenceService preferenceService = PreferenceService.newInstance(this);
+		if (preferenceService.isFirstTime()) {
+			DataService.newInstance(this).populateInitialData();
+			preferenceService.markLaunched();
+		}
+
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
@@ -39,17 +69,44 @@ public class ProductsActivity extends AppCompatActivity implements NavigationVie
 		drawer.setDrawerListener(toggle);
 		toggle.syncState();
 
-		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+		navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
 
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		List<Category> categories = CategoryService.newInstance(this).getAll();
+		categoriesAdapter = new CategoriesAdapter(getSupportFragmentManager(), categories);
 
-		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.container);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+		viewPager = (ViewPager) findViewById(R.id.container);
+		viewPager.setAdapter(categoriesAdapter);
+		viewPager.addOnPageChangeListener(new OnPageChangeListener());
 
 		TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-		tabLayout.setupWithViewPager(mViewPager);
+		tabLayout.setupWithViewPager(viewPager);
+
+		prepareNavigationMenu(categories);
+	}
+
+	private void prepareNavigationMenu(final List<Category> categories) {
+		MenuItem item = navigationView.getMenu().getItem(0);
+		Menu menu = item.getSubMenu();
+		for (final Category category : categories) {
+			final MenuItem menuItem = menu.add(123, Menu.NONE, Menu.NONE, category.getName());
+			Glide.with(this).load(category.getIcon()).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).into(new SimpleTarget<Bitmap>() {
+				@Override
+				public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+					menuItem.setIcon(new BitmapDrawable(getResources(), resource));
+				}
+			});
+			menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem menuItem) {
+					int position = categoriesAdapter.getItemPosition(category);
+					viewPager.setCurrentItem(position, true);
+					return false;
+				}
+			});
+		}
+		menu.setGroupCheckable(123, true, true);
+		menu.getItem(0).setChecked(true);
 	}
 
 	@Override
@@ -62,21 +119,13 @@ public class ProductsActivity extends AppCompatActivity implements NavigationVie
 		}
 	}
 
-	@SuppressWarnings("StatementWithEmptyBody")
 	@Override
 	public boolean onNavigationItemSelected(MenuItem item) {
-		// Handle navigation view item clicks here.
 		int id = item.getItemId();
+		if (item.getGroupId() == 123) {
 
-		if (id == R.id.nav_camera) {
-			// Handle the camera action
-		} else if (id == R.id.nav_gallery) {
-
-		} else if (id == R.id.nav_slideshow) {
-
-		} else if (id == R.id.nav_manage) {
-
-		} else if (id == R.id.nav_share) {
+		}
+		if (id == R.id.nav_share) {
 
 		} else if (id == R.id.nav_send) {
 
@@ -87,72 +136,14 @@ public class ProductsActivity extends AppCompatActivity implements NavigationVie
 		return true;
 	}
 
-	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		private static final String ARG_SECTION_NUMBER = "section_number";
-
-		public PlaceholderFragment() {
-		}
-
-		/**
-		 * Returns a new instance of this fragment for the given section
-		 * number.
-		 */
-		public static PlaceholderFragment newInstance(int sectionNumber) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
-			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-			fragment.setArguments(args);
-			return fragment;
-		}
+	private class OnPageChangeListener extends ViewPager.SimpleOnPageChangeListener {
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-								 Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_category, container, false);
-			TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-			textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
-
-	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
-	 */
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-		public SectionsPagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
-
-		@Override
-		public Fragment getItem(int position) {
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a PlaceholderFragment (defined as a static inner class below).
-			return PlaceholderFragment.newInstance(position + 1);
-		}
-
-		@Override
-		public int getCount() {
-			// Show 3 total pages.
-			return 3;
-		}
-
-		@Override
-		public CharSequence getPageTitle(int position) {
-			switch (position) {
-				case 0:
-					return "SECTION 1";
-				case 1:
-					return "SECTION 2";
-				case 2:
-					return "SECTION 3";
+		public void onPageSelected(int position) {
+			Menu menu = navigationView.getMenu().getItem(0).getSubMenu();
+			for (int i = 0; i < menu.size(); i++) {
+				menu.getItem(i).setChecked(i == position);
 			}
-			return null;
 		}
 	}
 }
