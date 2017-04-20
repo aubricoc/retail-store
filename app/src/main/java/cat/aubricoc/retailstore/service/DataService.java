@@ -2,17 +2,11 @@ package cat.aubricoc.retailstore.service;
 
 import android.content.Context;
 import android.util.JsonReader;
-import android.util.JsonToken;
 
-import org.json.JSONArray;
-import org.json.JSONTokener;
-
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +20,22 @@ public class DataService {
 
 	private Context context;
 
+	private DataService(Context context) {
+		this.context = context;
+	}
+
 	public static DataService newInstance(Context context) {
 		return new DataService(context);
 	}
 
-	private DataService(Context context) {
-		this.context = context;
+	private static byte[] toByteArray(InputStream is) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buff = new byte[10240];
+		int i;
+		while ((i = is.read(buff, 0, buff.length)) > 0) {
+			baos.write(buff, 0, i);
+		}
+		return baos.toByteArray();
 	}
 
 	public void populateInitialData() {
@@ -68,21 +72,26 @@ public class DataService {
 		return categories;
 	}
 
-	public Category readCategory(JsonReader reader) throws IOException {
+	private Category readCategory(JsonReader reader) throws IOException {
 		Category category = new Category();
 		String icon = null;
 
 		reader.beginObject();
 		while (reader.hasNext()) {
 			String name = reader.nextName();
-			if (name.equals("name")) {
-				category.setName(reader.nextString());
-			} else if (name.equals("icon")) {
-				icon = reader.nextString();
-			} else if (name.equals("products")) {
-				category.setProducts(readProducts(reader));
-			} else {
-				reader.skipValue();
+			switch (name) {
+				case "name":
+					category.setName(reader.nextString());
+					break;
+				case "icon":
+					icon = reader.nextString();
+					break;
+				case "products":
+					category.setProducts(readProducts(reader));
+					break;
+				default:
+					reader.skipValue();
+					break;
 			}
 		}
 		reader.endObject();
@@ -113,14 +122,19 @@ public class DataService {
 		reader.beginObject();
 		while (reader.hasNext()) {
 			String name = reader.nextName();
-			if (name.equals("name")) {
-				product.setName(reader.nextString());
-			} else if (name.equals("image")) {
-				image = reader.nextString();
-			} else if (name.equals("price")) {
-				product.setPrice(reader.nextDouble());
-			} else {
-				reader.skipValue();
+			switch (name) {
+				case "name":
+					product.setName(reader.nextString());
+					break;
+				case "image":
+					image = reader.nextString();
+					break;
+				case "price":
+					product.setPrice(reader.nextDouble());
+					break;
+				default:
+					reader.skipValue();
+					break;
 			}
 		}
 		reader.endObject();
@@ -143,15 +157,5 @@ public class DataService {
 		byte[] file = toByteArray(inputStream);
 		inputStream.close();
 		return file;
-	}
-
-	private static byte[] toByteArray(InputStream is) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buff = new byte[10240];
-		int i;
-		while ((i = is.read(buff, 0, buff.length)) > 0) {
-			baos.write(buff, 0, i);
-		}
-		return baos.toByteArray();
 	}
 }

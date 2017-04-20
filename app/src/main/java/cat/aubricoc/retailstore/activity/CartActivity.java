@@ -18,7 +18,7 @@ import cat.aubricoc.retailstore.service.ProductService;
 
 public class CartActivity extends AppCompatActivity {
 
-	private List<ItemCart> cart = new ArrayList<>();
+	private final List<ItemCart> cart = new ArrayList<>();
 
 	private CartProductsAdapter adapter;
 

@@ -11,7 +11,7 @@ import cat.aubricoc.retailstore.model.Category;
 
 public class CategoriesAdapter extends FragmentPagerAdapter {
 
-	private List<Category> categories;
+	private final List<Category> categories;
 
 	public CategoriesAdapter(FragmentManager fm, List<Category> categories) {
 		super(fm);
@@ -25,7 +25,10 @@ public class CategoriesAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getItemPosition(Object object) {
-		return categories.indexOf(object);
+		if (object instanceof Category) {
+			return categories.indexOf(object);
+		}
+		return -1;
 	}
 
 	@Override
